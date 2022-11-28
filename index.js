@@ -19,6 +19,7 @@ async function run() {
         const productsCollection = database.collection('products');
         const addedProductCollection = database.collection('addedProduct');
         const bookingsCollection = database.collection('bookings');
+        const usersCollection = database.collection('users');
 
 
         app.get('/products', async (req, res) => {
@@ -40,9 +41,21 @@ async function run() {
             res.send(addedProducts);
         })
 
+        // app.get('/bookings', async (req, res) => {
+        //     const query = {};
+        //     const bookings = await bookingsCollection.find(query).toArray();
+        //     res.send(bookings);
+        // })
+
+        app.get('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const booking = await bookingsCollection.findOne(query);
+            res.send(booking)
+        })
+
         app.get('/bookings', async (req, res) => {
             const email = req.query.email;
-            console.log(email)
             const query = { email: email };
             const result = await bookingsCollection.find(query).toArray();
             res.send(result)
@@ -57,6 +70,12 @@ async function run() {
         app.post('/bookings', async (req, res) => {
             const booking = req.body;
             const result = await bookingsCollection.insertOne(booking);
+            res.send(result);
+        })
+
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
             res.send(result);
         })
     }
